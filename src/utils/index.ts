@@ -97,7 +97,7 @@ export class LocalStorage{
         localStorage.removeItem(key);
     }
 
-    static clear(key:string){
+    static clear(){
         if(!isBrowser) return;
         localStorage.clear();
     }
