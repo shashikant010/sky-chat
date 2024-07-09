@@ -35,4 +35,72 @@ export const requestHandler=async(
     }
 
 
+};
+
+export const classNames=(...className:string[])=>{
+    return className.filter(Boolean).join(" ");
+};
+
+export const getChatObjectMetadata=(
+    chat:ChatListItemInterface,
+    loggedInUser:UserInterface
+)=>{
+
+
+    const lastMessage= chat.lastMessage?.content ? chat.lastMessage?.content :
+     chat.lastMessage ? `${chat.lastMessage?.attachments?.length} attachment${chat.lastMessage?.attachments.length> 1 ?"s":""}` : "no messgage yet" ;
+
+     if(chat.isGroupChat){
+        return{
+            avatar: "https://via.placeholder.com/100x100.png",
+            title: chat.name,
+            description:`${chat.participants.length} members in the chat`,
+            lastMessage:chat.lastMessage ? chat.lastMessage?.sender?.username + ": " :lastMessage,
+            }
+     }
+     else{
+        const participant = chat.participants.find((p)=>p._id!==loggedInUser?._id);
+        return{
+            avatar:participant?.avatar.url,
+            title:participant?.username,
+            description: participant?.email,
+            lastMessage,
+        };
+     }
+
+};
+
+
+export class LocalStorage{
+    static get(key:string){
+        if(!isBrowser) return;
+        const value = localStorage.getItem(key); 
+        if(value){
+            try {
+                return JSON.parse(value)
+            } catch (error) {
+                return null
+            }
+        }
+        return null;    
+        }
+    
+    
+    static set(key:string,value:any){
+        if(!isBrowser) return;
+        localStorage.setItem(key,JSON.stringify(value));
+    }
+
+
+    static remove(key:string){
+        if(!isBrowser) return;
+        localStorage.removeItem(key);
+    }
+
+    static clear(key:string){
+        if(!isBrowser) return;
+        localStorage.clear();
+    }
+
+
 }
